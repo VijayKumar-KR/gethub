@@ -1,0 +1,153 @@
+<!--
+    Component name      :       Game1_MagicCard.cmp
+    Created by          :       Vijay Kumar KR
+    Created on          :       01 May 2017
+    Description         :       
+-->
+
+<aura:component implements="lightning:availableForFlowScreens,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,lightning:actionOverride,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="NextrowTab" type="Integer" default="0"/>
+
+    <aura:attribute name="lstKey" type="Integer[]"/> 
+
+    <aura:attribute name="backgroundImageURL" type="String" />  
+    <aura:attribute name="isselected" type="Boolean" default="false"/>
+    
+    <aura:attribute name="Table1" type="map" />
+    <aura:attribute name="Table2" type="map" />
+    <aura:attribute name="Table3" type="map" />
+    <aura:attribute name="Table4" type="map" />
+    <aura:attribute name="Table5" type="map" />
+    <aura:attribute name="Table6" type="map" /> 
+
+    <aura:attribute name="shuffledTable1" type="Integer" /> 
+    <aura:attribute name="shuffledTable2" type="Integer" />
+    <aura:attribute name="shuffledTable3" type="Integer" />
+    <aura:attribute name="shuffledTable4" type="Integer" />
+    <aura:attribute name="shuffledTable5" type="Integer" />
+    <aura:attribute name="shuffledTable6" type="Integer" />
+
+    <aura:attribute name="borderColor1" type="Boolean" default="false"/>
+    <aura:attribute name="borderColor2" type="Boolean" default="false"/>
+    <aura:attribute name="borderColor3" type="Boolean" default="false"/>
+    <aura:attribute name="borderColor4" type="Boolean" default="false"/>
+    <aura:attribute name="borderColor5" type="Boolean" default="false"/>
+    <aura:attribute name="borderColor6" type="Boolean" default="false"/>
+
+    <aura:attribute name="Table1MinValue" type="Integer" default="0"/>
+    <aura:attribute name="Table2MinValue" type="Integer" default="0"/>
+    <aura:attribute name="Table3MinValue" type="Integer" default="0"/>
+    <aura:attribute name="Table4MinValue" type="Integer" default="0"/>
+    <aura:attribute name="Table5MinValue" type="Integer" default="0"/>
+    <aura:attribute name="Table6MinValue" type="Integer" default="0"/> 
+
+    <aura:attribute name="FinalNumber" type="Integer" default="0"/>
+    <aura:attribute name="showModelforResult" type="Boolean" default="false"/>  
+    <aura:attribute name="showModelforStart" type="Boolean" default="true"/>
+    <aura:attribute name="onload" type="Boolean" default="false"/>
+
+    <aura:attribute name="ArrayofShuffulledTables" type="List" />
+    <aura:attribute name="ArrayofShuffulledKeys" type="List" />
+
+
+    <div class="demo-only" style="height: 640px;">
+  <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" >
+    <div class="">
+
+
+	<div class="slds-size_12-of-12 slds-small-size_8-of-12 slds-medium-size_12-of-12 slds-large-size_12-of-12 slds-box slds-scope slds-is-relative" style="{! ' background: url('+v.backgroundImageURL+') no-repeat;background-position: center;background-size: cover; border-radius: 0.2rem; '}">
+
+		<lightning:spinner aura:id="initSpinner" class="slds-spinner_container slds-hide" alternativeText="Loading Records" variant="brand" size="medium" body="Component[]"/>
+
+		<div class="fontfamily slds-p-top_small slds-theme_shade slds-theme_alert-texture slds-p-bottom_medium slds-text-align_center slds-text-heading_large" style="background-color: #0e3b5c; color: white; border-radius: 2rem;"><h1><strong>Magic Number Card</strong></h1></div>
+
+		<aura:if isTrue="{!v.showModelforStart}">
+	        <div class="demo-only">
+				<section role="dialog" style="position: absolute;" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+					<div class="slds-modal__container" style="width: 80%">
+						<div style="border: 4px solid #868282; background-color: beige; color: black;" class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+							<h2 id="modal-heading-01" class="fontfamily slds-align_absolute-center slds-text-heading_large slds-text-heading_medium slds-hyphenate" style="color: red;"><strong>Instruction*</strong></h2>
+							<h4 class="fontfamily" >Think of a number from 1 to 63 and look at each of the number cards then Click the cards If your number present on it...</h4>
+							<a onclick="{!c.StartGame}">
+					            <span title="Start" class="fontfamily hovercss slds-float_right slds-badge buttoncolor">
+					                Start 
+					            </span>
+					        </a>
+				        </div>
+					</div>
+				</section>
+			<div class="slds-backdrop slds-backdrop_open" style="position: absolute;"></div>
+			</div>
+		</aura:if>
+
+		<div class="slds-col slds-p-top_small">
+			<div class="slds-grid slds-wrap slds-grid_align-space slds-p-bottom_small"> 
+				<a  class="slds-p-bottom_small" style="text-decoration: none;"><div title="Click if your number present.." onclick="{!c.getValue1}" class="{! ' slds-box slds-large-size_12-of-12 slds-medium-size_12-of-12 slds-small-size_12-of-12 slds-col slds-text-align--left ' + if(v.borderColor1, ' bordercolor ',' background ')}" >
+					<aura:iteration items="{!v.lstKey}" var="Tab1" >
+						<c:Game1_MagicCard_ToggleTable map="{!v.Table1}" key="{!Tab1}"/>
+					</aura:iteration>
+				</div></a>
+				<a style="text-decoration: none;"><div onclick="{!c.getValue2}" title="Click if your number present.." class="{! 'slds-box slds-large-size_12-of-12 slds-medium-size_12-of-12 slds-small-size_12-of-12 slds-col slds-text-align--left ' + if(v.borderColor2, ' bordercolor ',' background ')}" >
+					<aura:iteration items="{!v.lstKey}" var="Tab2" >
+						<c:Game1_MagicCard_ToggleTable map="{!v.Table2}" key="{!Tab2}"/>
+					</aura:iteration>
+				</div></a>
+			</div>
+			<div class="slds-grid slds-wrap slds-grid_align-space slds-p-bottom_small">
+				<a  class="slds-p-bottom_small" style="text-decoration: none;"><div title="Click if your number present.." onclick="{!c.getValue3}" class="{! 'slds-box slds-large-size_12-of-12 slds-medium-size_12-of-12 slds-small-size_12-of-12 slds-col slds-text-align--left ' + if(v.borderColor3, ' bordercolor ',' background ')}" >
+					<aura:iteration items="{!v.lstKey}" var="Tab3" >
+						<c:Game1_MagicCard_ToggleTable map="{!v.Table3}" key="{!Tab3}"/>
+					</aura:iteration>
+				</div></a>                                                
+				<a style="text-decoration: none;"><div onclick="{!c.getValue4}" title="Click if your number present.." class="{! 'slds-box slds-large-size_12-of-12 slds-medium-size_12-of-12 slds-small-size_12-of-12 slds-col slds-text-align--left ' + if(v.borderColor4, ' bordercolor ',' background ')}" >
+					<aura:iteration items="{!v.lstKey}" var="Tab4" >
+						<c:Game1_MagicCard_ToggleTable map="{!v.Table4}" key="{!Tab4}"/>
+					</aura:iteration>
+				</div></a>
+			</div>
+			<div class="slds-grid slds-wrap slds-grid_align-space slds-p-bottom_small">
+				<a  class="slds-p-bottom_small" style="text-decoration: none;"><div title="Click if your number present.." onclick="{!c.getValue5}" class="{! 'slds-box slds-large-size_12-of-12 slds-medium-size_12-of-12 slds-small-size_12-of-12 slds-col slds-text-align--left ' + if(v.borderColor5, ' bordercolor ',' background ')}" >
+					<aura:iteration items="{!v.lstKey}" var="Tab5" >
+						<c:Game1_MagicCard_ToggleTable map="{!v.Table5}" key="{!Tab5}"/>
+					</aura:iteration>
+				</div></a>
+				<a style="text-decoration: none;"><div onclick="{!c.getValue6}" title="Click if your number present.." class="{! 'slds-box slds-large-size_12-of-12 slds-medium-size_12-of-12 slds-small-size_12-of-12 slds-col slds-text-align--left ' + if(v.borderColor6, ' bordercolor ',' background ')}" >
+					<aura:iteration items="{!v.lstKey}" var="Tab6" >
+						<c:Game1_MagicCard_ToggleTable map="{!v.Table6}" key="{!Tab6}"/>
+					</aura:iteration>
+				</div></a>
+			</div>
+			<div class="slds-align_absolute-center slds-p-bottom_small slds-p-top_small"> 
+        		<a><span onclick="{!c.getMynumber}" title="Get my number" class="button hovercss slds-p-left_large slds-p-bottom_x-large slds-align_absolute-center buttoncolor">
+                    Get my number
+                    </span></a>
+    		</div>
+		</div>
+
+        <aura:if isTrue="{!v.showModelforResult}">
+	        <div class="demo-only">
+				<section role="dialog" style="position: absolute;" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+					<div class="slds-modal__container" style="width: 80%">
+						<div style="border: 4px solid #868282; background-color: beige; color: black;"  class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+							<h1 class="fontfamily slds-text-heading_large" >YOUR NUMBER IS... <strong>{!v.FinalNumber}</strong>!!</h1>
+							<a onclick="{!c.closeModal}">
+					            <span title="Play Again" class="fontfamily hovercss buttoncolor slds-float_right slds-badge">
+					                Play Again
+					            </span>
+					        </a>
+				        </div>
+					</div>
+				</section>
+			<div class="slds-backdrop slds-backdrop_open" style="position: absolute;"></div> 
+			</div>
+		</aura:if>
+	</div>
+
+</div>
+</section>
+</div>
+
+
+</aura:component>
